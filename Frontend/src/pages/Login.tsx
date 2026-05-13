@@ -98,6 +98,7 @@ export function Login() {
         <div className="mt-8 text-center space-y-2">
           <p className="text-slate-500">
             Don&apos;t have an account?{" "}
+            
             <Link
               to="/register"
               className="text-sky-600 font-semibold hover:text-sky-700 transition"

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export function Register() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -18,6 +19,7 @@ export function Register() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          name,
           email,
           password,
         }),
@@ -64,7 +66,20 @@ export function Register() {
           Create your account to get started
         </p>
 
+
+          
         <form onSubmit={handleRegister} className="space-y-5">
+
+          {/* Name */}
+          <div>
+            <input
+              type="text"
+              placeholder="Name"
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
+            />
+          </div>
+
           {/* Email */}
           <div>
             <input
@@ -84,6 +99,8 @@ export function Register() {
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
           </div>
+
+          
 
           {/* Botón */}
           <button

@@ -4,7 +4,7 @@ async function testConnection() {
   // Insertar un usuario
   await pool.query(
     'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
-    ['Test User 2 ', 'test2@test.com', '12345667']
+    ['ROcky', 'rocky@test.com', '12345667']
   );
 
   console.log('Usuario insertado correctamente');

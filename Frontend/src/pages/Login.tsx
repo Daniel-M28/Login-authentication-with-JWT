@@ -26,6 +26,11 @@ export function Login() {
 
     const data = await response.json();        // Esperamos la respuesta del backend y la convertimos a JSON
 
+
+    if (response.ok) {
+      setEmail('');
+      setPassword('');
+    }
     console.log(data);
   };
 
@@ -70,6 +75,7 @@ export function Login() {
             <input
               type="email"
               placeholder="Email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
@@ -80,6 +86,7 @@ export function Login() {
             <input
               type="password"
               placeholder="Password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />

@@ -28,6 +28,14 @@ export function Register() {
 
     const data = await response.json();
 
+    //reiniciamos los campos del formulario si el registro fue exitoso
+ if (response.ok) {
+      setName('');
+      setEmail('');
+      setPassword('');
+    }
+    
+
     console.log(data);
   };
 
@@ -75,6 +83,7 @@ export function Register() {
             <input
               type="text"
               placeholder="Name"
+              value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
@@ -85,6 +94,7 @@ export function Register() {
             <input
               type="email"
               placeholder="Email"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
@@ -95,6 +105,7 @@ export function Register() {
             <input
               type="password"
               placeholder="Password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />

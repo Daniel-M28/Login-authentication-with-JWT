@@ -1,12 +1,17 @@
 import type { Request, Response } from "express";
+import { registerSchema, loginSchema } from '../schemas/auth.schema.js';
+import { ZodError } from 'zod';
 import pool from "../config/db.js";
 
 // Login controller
+
 export const login = async (req: Request, res: Response) => {
   try {
+    // Validar datos con Zod
+    const validatedData = loginSchema.parse(req.body);
 
-    //  Extraer datos enviados por el frontend
-    const { email, password } = req.body;
+    // Extraer datos ya validados
+    const { email, password } = validatedData;
 
     //  Buscar usuario por email
     const result = await pool.query(
@@ -38,17 +43,25 @@ export const login = async (req: Request, res: Response) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     });
 
 
   } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      message: 'Internal server error',
+  if (error instanceof ZodError) {
+    return res.status(400).json({
+      message: 'Validation error',
+      errors: error.issues,
     });
   }
+
+  console.error(error);
+
+  return res.status(500).json({
+    message: 'Internal server error',
+  });
+}
 };
 
 
@@ -56,20 +69,33 @@ export const login = async (req: Request, res: Response) => {
 //Register controller
 export const register = async (req: Request, res: Response) => {
   try {
-    //extrae los datos enviados desde el cuerpo de la solicitud desde el front
-    const { name, email, password } = req.body;
+
+     // Validar datos con Zod
+    const validatedData = registerSchema.parse(req.body);
+
+    // Extraer datos ya validados   
+    const { name, email, password } = validatedData;
 
     // Guardar en PostgreSQL
     const result = await pool.query(
-      "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING name, email", //returning * para devolver el usuario insertado
+      "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING name, email, role", //returning * para devolver el usuario insertado
       [name, email, password],
     );
 
     return res.json({ message: "Register successful", user: result.rows[0] }); //devuelve el usuario insertado en la respuesta
 
   } catch (error) {
-    console.error("Error registering user:", error);
-
-    return res.status(500).json({ message: "Error registering user" }); 
+  if (error instanceof ZodError) {
+    return res.status(400).json({
+      message: 'Validation error',
+      errors: error.issues,
+    });
   }
+
+  console.error(error);
+
+  return res.status(500).json({
+    message: 'Internal server error',
+  });
+}
 };

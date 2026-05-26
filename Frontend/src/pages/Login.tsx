@@ -4,11 +4,16 @@ import { Link } from 'react-router-dom';
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [serverError, setServerError] = useState('');
 
   const handleLogin = async (
     e: React.SyntheticEvent<HTMLFormElement, SubmitEvent> // tipo para el evento de submit del formulario 
   ) => {
     e.preventDefault();
+
+    setErrors({}); // Limpiar errores antes de enviar la solicitud
+    setServerError('');
 
     const response = await fetch(
       'http://localhost:3000/api/auth/login',  // URL del endpoint de login en el backend
@@ -26,12 +31,36 @@ export function Login() {
 
     const data = await response.json();        // Esperamos la respuesta del backend y la convertimos a JSON
 
-
-    if (response.ok) {
-      setEmail('');
-      setPassword('');
-    }
+   
     console.log(data);
+
+      // Si el backend devuelve errores de validación, los formateamos para mostrarlos en el formulario
+if (!response.ok) {
+
+      if (data.errors) {
+    const formattedErrors: Record<string, string> = {};
+
+    data.errors.forEach(
+      (error: { path: string[]; message: string }) => {
+        
+        formattedErrors[error.path[0]] = error.message;
+      }
+    );
+
+    setErrors(formattedErrors);
+
+  } 
+
+  if (data.message) {
+    setServerError(data.message);
+  }
+  
+  return;
+}
+ // Login exitoso
+  setEmail('');
+  setPassword('');
+
   };
 
   return (
@@ -69,6 +98,13 @@ export function Login() {
           Enter your credentials to continue
         </p>
 
+
+        {serverError && (
+         <p className="text-red-500 text-sm mb-4 text-center">
+          {serverError}
+         </p>
+         )}
+
         <form onSubmit={handleLogin} className="space-y-5">
           {/* Email */}
           <div>
@@ -79,6 +115,14 @@ export function Login() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
+
+            {errors.email && (
+            <p className="text-red-500 text-sm mt-1">
+            {errors.email}
+            </p>
+            )}
+            
+           
           </div>
 
           {/* Password */}
@@ -90,6 +134,14 @@ export function Login() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
+
+            {errors.password && (
+           <p className="text-red-500 text-sm mt-1">
+            {errors.password}
+          </p>
+         )}
+
+     
           </div>
 
           {/* Botón */}
@@ -99,6 +151,7 @@ export function Login() {
           >
             Login
           </button>
+        
         </form>
 
         {/* Links */}

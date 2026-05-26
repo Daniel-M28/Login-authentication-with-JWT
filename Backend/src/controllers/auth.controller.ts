@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { registerSchema, loginSchema } from '../schemas/auth.schema.js';
 import { ZodError } from 'zod';
+import bcrypt from 'bcrypt';
 import pool from "../config/db.js";
 
 // Login controller
@@ -29,11 +30,15 @@ export const login = async (req: Request, res: Response) => {
     // Obtener el usuario encontrado
     const user = result.rows[0];
 
-    // Comparar la contraseña (temporalmente en texto plano)
-    if (user.password !== password) {
+    const isMatch = await bcrypt.compare(
+    password,
+    user.password
+    );
+
+    if (!isMatch) {
       return res.status(401).json({
-        message: 'Invalid password',
-      });
+       message: 'Invalid password',
+     });
     }
 
     // Login exitoso
@@ -76,10 +81,43 @@ export const register = async (req: Request, res: Response) => {
     // Extraer datos ya validados   
     const { name, email, password } = validatedData;
 
+    // Verificar si el username ya existe
+    const existingUserName = await pool.query(
+      'SELECT * FROM users WHERE name = $1',
+      [name]
+    );
+
+    if (existingUserName.rows.length > 0) {
+
+      return res.status(409).json({
+        message: 'This username is already in use',
+      });
+
+    }
+
+    // Verificar si el email ya existe
+    const existingUserEmail = await pool.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (existingUserEmail.rows.length > 0) {
+
+      return res.status(409).json({
+        message: 'This email is already in use',
+      });
+
+    }
+
+    //hash de la contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+
+
     // Guardar en PostgreSQL
     const result = await pool.query(
       "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING name, email, role", //returning * para devolver el usuario insertado
-      [name, email, password],
+      [name, email, hashedPassword],
     );
 
     return res.json({ message: "Register successful", user: result.rows[0] }); //devuelve el usuario insertado en la respuesta

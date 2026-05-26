@@ -13,7 +13,7 @@ export function AppRouter(){
             <Route path='/'         element={<Welcome/>} />
             <Route path='/register' element={<Register/>} />
             <Route path='/login'    element={<Login/>} />
-            <Route path='/*'      element={<Error404/>} />
+            <Route path='/*'        element={<Error404/>} />
         </Routes>
     )
 }

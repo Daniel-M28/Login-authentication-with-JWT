@@ -5,11 +5,15 @@ export function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleRegister = async (
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [serverError, setServerError] = useState('');
+    const handleRegister = async (
     e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
-  ) => {
+    ) => {
     e.preventDefault();
+
+    setErrors({}); // Limpiar errores antes de enviar la solicitud
+    setServerError('');
 
     const response = await fetch(
       'http://localhost:3000/api/auth/register',
@@ -29,14 +33,45 @@ export function Register() {
     const data = await response.json();
 
     //reiniciamos los campos del formulario si el registro fue exitoso
- if (response.ok) {
-      setName('');
-      setEmail('');
-      setPassword('');
-    }
+    if (!response.ok) {
     
-
+    }
+  
     console.log(data);
+
+      // Si el backend devuelve errores de validación, los formateamos para mostrarlos en el formulario
+
+        // Si el backend devuelve errores de validación, los formateamos para mostrarlos en el formulario
+   if (!response.ok) {
+
+      if (data.errors) {
+    const formattedErrors: Record<string, string> = {};
+
+    data.errors.forEach(
+      (error: { path: string[]; message: string }) => {
+        
+        formattedErrors[error.path[0]] = error.message;
+      }
+    );
+
+    setErrors(formattedErrors);
+
+  } 
+
+  if (data.message) {
+    setServerError(data.message);
+  }
+  
+  return;
+
+}
+
+  setName('');
+  setEmail('');
+  setPassword('');
+
+
+
   };
 
   return (
@@ -74,7 +109,11 @@ export function Register() {
           Create your account to get started
         </p>
 
-
+        {serverError && (
+         <p className="text-red-500 text-sm mb-4 text-center">
+          {serverError}
+         </p>
+         )} 
           
         <form onSubmit={handleRegister} className="space-y-5">
 
@@ -87,6 +126,13 @@ export function Register() {
               onChange={(e) => setName(e.target.value)}
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
+          {errors.name && (
+          <p className="text-red-500 text-sm mt-1">
+           {errors.name}
+          </p>
+          )}
+
+
           </div>
 
           {/* Email */}
@@ -98,6 +144,13 @@ export function Register() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
+
+              {errors.email && (
+              <p className="text-red-500 text-sm mt-1">
+              {errors.email}
+              </p>
+              )}
+
           </div>
 
           {/* Password */}
@@ -109,6 +162,13 @@ export function Register() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
+
+            {errors.password && (
+            <p className="text-red-500 text-sm mt-1">
+            {errors.password}
+            </p>
+             )}
+
           </div>
 
           

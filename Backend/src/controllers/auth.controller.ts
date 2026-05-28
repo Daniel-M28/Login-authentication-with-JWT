@@ -3,6 +3,7 @@ import { registerSchema, loginSchema } from '../schemas/auth.schema.js';
 import { ZodError } from 'zod';
 import bcrypt from 'bcrypt';
 import pool from "../config/db.js";
+import jwt from 'jsonwebtoken';
 
 // Login controller
 
@@ -41,9 +42,26 @@ export const login = async (req: Request, res: Response) => {
      });
     }
 
+    // Generar token JWT
+    const token = jwt.sign(
+      {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: '1d',
+      }
+    );
+
+
     // Login exitoso
     return res.status(200).json({
       message: 'Login successful',
+      token,
+      
       user: {
         id: user.id,
         name: user.name,

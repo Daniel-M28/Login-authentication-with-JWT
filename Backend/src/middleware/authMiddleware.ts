@@ -12,6 +12,8 @@ if (!authHeader) {
   });
 
 }
+// El token se espera en el formato "Bearer <token>"
+// Por lo tanto, se divide el header para obtener solo el token
 
 const token = authHeader.split(' ')[1];
 

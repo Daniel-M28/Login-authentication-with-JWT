@@ -1,4 +1,5 @@
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 type Props = {
   children: React.ReactNode;
@@ -8,12 +9,12 @@ export function GuestRoute({
   children,
 }: Props) {
 
-  const token = localStorage.getItem('token');
+   const { isAuthenticated } = useAuth();
 
   // si ya está autenticado
-  if (token) {
+  if (isAuthenticated) {
 
-    return <Navigate to="/profile" />;
+    return <Navigate to="/profile" replace />;
 
   }
 

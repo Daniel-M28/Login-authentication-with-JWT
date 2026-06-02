@@ -1,4 +1,5 @@
 import { Navigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 // Componente de ruta protegida que verifica si el usuario está autenticado antes de renderizar el componente hijo
 type Props = {
@@ -10,13 +11,13 @@ export function ProtectedRoute({
   children,
 }: Props) {
 
-  const token = localStorage.getItem('token');
+  const { isAuthenticated } = useAuth(); // Obtenemos el estado de autenticación del contexto
 
   
-  // Si NO hay token
-  if (!token) {
+  // si no hay token
+  if (!isAuthenticated) {
 
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
 
   }
 

@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 
 
 export function Login() {
+  const { login } = useAuth();
   const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -38,13 +41,13 @@ export function Login() {
    
     console.log(data);
 
-    localStorage.setItem('token', data.token); // Guardamos el token JWT en el almacenamiento local del navegador para usarlo en futuras solicitudes autenticadas
-
-      // Si el backend devuelve errores de validación, los formateamos para mostrarlos en el formulario
-if (!response.ok) {
+      
+    // Si el backend devuelve errores de validación, los formateamos para mostrarlos en el formulario
+      if (!response.ok) {
 
       if (data.errors) {
-    const formattedErrors: Record<string, string> = {};
+    
+        const formattedErrors: Record<string, string> = {};
 
     data.errors.forEach(
       (error: { path: string[]; message: string }) => {
@@ -66,7 +69,9 @@ if (!response.ok) {
  // Login exitoso
   setEmail('');
   setPassword('');
+  login(data.token, data.user); // Guardamos el token y la información del usuario en el contexto de autenticación
   navigate('/profile'); // Redirigimos al usuario a la página de perfil después de un login exitoso
+
 
   };
 

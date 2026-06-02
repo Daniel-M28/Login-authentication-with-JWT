@@ -1,43 +1,16 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
     
 export function Profile() {
 
-  const [user, setUser] = useState<any>(null);
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const handleLogout = () => {
 
-    const getProfile = async () => {
+  logout();
 
-      const token = localStorage.getItem('token');
-
-      const response = await fetch(
-        'http://localhost:3000/api/auth/profile',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      console.log(data);
-
-      setUser(data.user);
-
-    };
-
-    getProfile();
-
-  }, []);
-
-const handleLogout = () => {
-
-  localStorage.removeItem('token');
-
-  navigate('/login');
+ navigate('/login');
 
 };
 

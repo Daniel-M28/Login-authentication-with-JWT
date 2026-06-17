@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import {createContext,useContext,useEffect,useState} from 'react';
 
 type User = {
   id: number;
@@ -35,8 +30,8 @@ export function AuthProvider({
 
   const [user, setUser] = useState<User | null>(null);
 
-  const [loading, setLoading] = useState(true); // Para manejar el estado de carga inicial
-
+  const [loading, setLoading] = useState(true); // Para manejar el estado de carga inicial da tiempo a que se verifique la sesión
+                                                
   const [token, setToken] = useState<string | null>(
     localStorage.getItem('token')
   );
@@ -53,7 +48,8 @@ export function AuthProvider({
 
   }
 
-  setLoading(false);
+  setLoading(false); //
+
 
 }, []);
 

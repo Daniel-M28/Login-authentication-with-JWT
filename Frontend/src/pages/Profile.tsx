@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+
     
 export function Profile() {
 
@@ -10,7 +11,7 @@ export function Profile() {
 
   logout();
 
- navigate('/login');
+ navigate('/login', { replace: true });
 
 };
 
@@ -80,11 +81,22 @@ export function Profile() {
 
         </div>
 
+         {/* Admin panel */}
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => navigate('/admin')}
+              className="w-full py-3 mt-2 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300" >
+            Admin Panel
+            </button>
+          )}
+
+
+
+
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="w-full py-3 mt-2 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-        >
+          className="w-full py-3 mt-2 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
           Logout
         </button>
 

@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+//utilizamos zod para validar los datos de entrada en el backend.
+
 export const registerSchema = z.object({
   name: z
     .string()

@@ -7,6 +7,9 @@ export function Register() {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState('');
+  const [message, setMessage] = useState('');
+
+
     const handleRegister = async (
     e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
     ) => {
@@ -66,6 +69,8 @@ export function Register() {
 
 }
 
+   
+  setMessage('User created successfully');
   setName('');
   setEmail('');
   setPassword('');
@@ -115,6 +120,15 @@ export function Register() {
          </p>
          )} 
           
+          {message && (<div className="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-xl mb-4">
+            {message}
+            
+            </div>
+
+)}
+
+
+
         <form onSubmit={handleRegister} className="space-y-5">
 
           {/* Name */}

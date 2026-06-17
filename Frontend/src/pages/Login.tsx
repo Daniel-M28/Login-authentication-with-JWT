@@ -70,7 +70,7 @@ export function Login() {
   setEmail('');
   setPassword('');
   login(data.token, data.user); // Guardamos el token y la información del usuario en el contexto de autenticación
-  navigate('/profile'); // Redirigimos al usuario a la página de perfil después de un login exitoso
+  navigate('/profile', { replace: true }); // Redirigimos al usuario a la página de perfil después de un login exitoso
 
 
   };

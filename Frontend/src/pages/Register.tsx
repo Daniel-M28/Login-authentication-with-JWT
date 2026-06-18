@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../config/api';
 
 export function Register() {
   const [name, setName] = useState('');
@@ -19,7 +20,7 @@ export function Register() {
     setServerError('');
 
     const response = await fetch(
-      'http://localhost:3000/api/auth/register',
+      `${API_URL}/api/auth/register`,
       {
         method: 'POST',
         headers: {

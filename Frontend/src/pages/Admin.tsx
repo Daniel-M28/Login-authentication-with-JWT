@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config/api';
 
 type User = {
   id: number;
@@ -25,7 +26,7 @@ export function Admin() {
         const token = localStorage.getItem('token');
 
         const response = await fetch(
-          'http://localhost:3000/api/users',
+          `${API_URL}/api/users/`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -70,7 +71,7 @@ export function Admin() {
    const token = localStorage.getItem('token');
 
     const response = await fetch(
-      `http://localhost:3000/api/users/${id}`,
+      `${API_URL}/api/users/${id}`,
       {
         method: 'DELETE',
         headers: {
@@ -115,7 +116,7 @@ export function Admin() {
     const token = localStorage.getItem('token');
 
     const response = await fetch(
-      `http://localhost:3000/api/users/${id}/role`,
+      `${API_URL}/api/users/${id}/role`,
       {
         method: 'PATCH',
         headers: {

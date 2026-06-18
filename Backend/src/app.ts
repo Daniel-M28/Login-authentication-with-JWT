@@ -16,7 +16,7 @@ app.use('/api/admin', adminRoutes);
 
 app.use('/api/users', usersRoutes);
 
-app.use('/api/users', usersRoutes);
+
 
 app.get('/', (req, res)=>{
     res.send ('API funcionando')

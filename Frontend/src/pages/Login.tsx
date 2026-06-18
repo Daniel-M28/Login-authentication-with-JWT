@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config/api';
 
 
 
@@ -23,7 +24,7 @@ export function Login() {
     setServerError('');
 
     const response = await fetch(
-      'http://localhost:3000/api/auth/login',  // URL del endpoint de login en el backend
+      `${API_URL}/api/auth/login`,  // URL del endpoint de login en el backend
       {
         method: 'POST',
         headers: {

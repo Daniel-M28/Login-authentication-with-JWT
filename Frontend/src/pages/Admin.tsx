@@ -234,7 +234,7 @@ export function Admin() {
 
                     <select
                     value={listedUser.role}
-                    disabled={listedUser.id === user?.id}
+                    disabled={ listedUser.email === 'admin@admin.com'}
                     onChange={(e) =>
                       handleRoleChange(
                         listedUser.id,
@@ -271,6 +271,7 @@ export function Admin() {
                   ) : (
 
                     <button
+                    disabled={ listedUser.email === 'admin@admin.com'}
                     onClick={() => handleDelete(listedUser.id)}
                     className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full text-sm"
                     >

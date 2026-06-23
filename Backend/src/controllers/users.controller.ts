@@ -43,19 +43,39 @@ export const deleteUser = async (
 
   const { id } = req.params;
 
-  // Evitar que un admin se borre a sí mismo
-
-  const adminId = req.user?.id;
-
-  if (Number(id) === adminId) {
-
-  return res.status(400).json({
-    message: 'You cannot delete your own account',
-  });
-
-}
-
   try {
+
+    // Buscar usuario
+
+    const userResult = await pool.query(
+      `
+      SELECT email
+      FROM users
+      WHERE id = $1
+      `,
+      [id]
+    );
+
+    if (userResult.rowCount === 0) {
+
+      return res.status(404).json({
+        message: 'User not found',
+      });
+
+    }
+
+    const user = userResult.rows[0];
+
+    // Proteger cuenta demo
+
+    if (user.email === 'admin@admin.com') {
+
+      return res.status(403).json({
+        message:
+          'Demo admin cannot be deleted',
+      });
+
+    }
 
     const result = await pool.query(
       `
@@ -66,16 +86,9 @@ export const deleteUser = async (
       [id]
     );
 
-    if (result.rowCount === 0) {
-
-      return res.status(404).json({
-        message: 'User not found',
-      });
-
-    }
-
     return res.status(200).json({
-      message: 'User deleted successfully',
+      message:
+        'User deleted successfully',
     });
 
   } catch (error) {
@@ -83,7 +96,8 @@ export const deleteUser = async (
     console.error(error);
 
     return res.status(500).json({
-      message: 'Internal server error',
+      message:
+        'Internal server error',
     });
 
   }
@@ -98,20 +112,7 @@ export const updateUserRole = async (
 ) => {
 
   const { id } = req.params;
-
   const { role } = req.body;
-
-  const adminId = req.user?.id;
-
-  // Evitar que un admin se cambie su propio rol
-
-  if (Number(id) === adminId) {
-
-    return res.status(400).json({
-      message: 'You cannot change your own role',
-    });
-
-  }
 
   // Validar roles permitidos
 
@@ -126,9 +127,39 @@ export const updateUserRole = async (
 
   }
 
-
-
   try {
+
+    // Buscar usuario
+
+    const userResult = await pool.query(
+      `
+      SELECT email
+      FROM users
+      WHERE id = $1
+      `,
+      [id]
+    );
+
+    if (userResult.rowCount === 0) {
+
+      return res.status(404).json({
+        message: 'User not found',
+      });
+
+    }
+
+    const user = userResult.rows[0];
+
+    // Proteger cuenta demo
+
+    if (user.email === 'admin@admin.com') {
+
+      return res.status(403).json({
+        message:
+          'Demo admin cannot be modified',
+      });
+
+    }
 
     const result = await pool.query(
       `
@@ -139,14 +170,6 @@ export const updateUserRole = async (
       `,
       [role, id]
     );
-
-    if (result.rowCount === 0) {
-
-      return res.status(404).json({
-        message: 'User not found',
-      });
-
-    }
 
     return res.status(200).json(
       result.rows[0]

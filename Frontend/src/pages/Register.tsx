@@ -139,7 +139,7 @@ export function Register() {
               placeholder="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
+              className="w-full px-5 py-3 rounded-full bg-white border border-gray-300 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
           {errors.name && (
           <p className="text-red-500 text-sm mt-1">
@@ -157,7 +157,7 @@ export function Register() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
+              className="w-full px-5 py-3 rounded-full bg-white border border-gray-300 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
 
               {errors.email && (
@@ -175,7 +175,7 @@ export function Register() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
+              className="w-full px-5 py-3 rounded-full bg-white border border-gray-300 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
 
             {errors.password && (

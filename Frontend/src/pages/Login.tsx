@@ -10,72 +10,107 @@ export function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState('');
 
   const handleLogin = async (
-    e: React.SyntheticEvent<HTMLFormElement, SubmitEvent> // tipo para el evento de submit del formulario 
-  ) => {
-    e.preventDefault();
+  e: React.SyntheticEvent<HTMLFormElement, SubmitEvent>
+) => {
 
-    setErrors({}); // Limpiar errores antes de enviar la solicitud
-    setServerError('');
+  e.preventDefault();
+
+  setLoading(true);
+  setErrors({});
+  setServerError('');
+
+  try {
 
     const response = await fetch(
-      `${API_URL}/api/auth/login`,  // URL del endpoint de login en el backend
+      `${API_URL}/api/auth/login`,
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',  // Enviamos los datos en formato JSON
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({                 // Convertimos el email y password a JSON para enviarlos en el cuerpo de la solicitud
+        body: JSON.stringify({
           email,
           password,
         }),
       }
     );
 
-    const data = await response.json();        // Esperamos la respuesta del backend y la convertimos a JSON
+    const data = await response.json();
 
-   
     console.log(data);
 
-      
-    // Si el backend devuelve errores de validación, los formateamos para mostrarlos en el formulario
-      if (!response.ok) {
+    // Si el backend devuelve errores
+    if (!response.ok) {
 
       if (data.errors) {
-    
+
         const formattedErrors: Record<string, string> = {};
 
-    data.errors.forEach(
-      (error: { path: string[]; message: string }) => {
-        
-        formattedErrors[error.path[0]] = error.message;
+        data.errors.forEach(
+          (error: {
+            path: string[];
+            message: string;
+          }) => {
+
+            formattedErrors[
+              error.path[0]
+            ] = error.message;
+
+          }
+        );
+
+        setErrors(formattedErrors);
+
+      }
+
+      if (data.message) {
+
+        setServerError(data.message);
+
+      }
+
+      return;
+
+    }
+
+    // Login exitoso
+    setEmail('');
+    setPassword('');
+
+    login(
+      data.token,
+      data.user
+    );
+
+    navigate(
+      '/profile',
+      {
+        replace: true,
       }
     );
 
-    setErrors(formattedErrors);
+  } catch (error) {
 
-  } 
+    console.error(error);
 
-  if (data.message) {
-    setServerError(data.message);
+    setServerError(
+      'Connection error. Please try again.'
+    );
+
+  } finally {
+
+    setLoading(false);
+
   }
-  
-  return;
-}
- // Login exitoso
-  setEmail('');
-  setPassword('');
-  login(data.token, data.user); // Guardamos el token y la información del usuario en el contexto de autenticación
-  navigate('/profile', { replace: true }); // Redirigimos al usuario a la página de perfil después de un login exitoso
 
-
-  };
-
+};
   return (
   <div className="min-h-screen bg-gradient-to-br from-sky-200 to-slate-100 flex items-center justify-center px-4">
     <div className="w-full max-w-5xl grid md:grid-cols-2 bg-white rounded-[2rem] shadow-2xl overflow-hidden">
@@ -126,7 +161,7 @@ export function Login() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
+              className="w-full px-5 py-3 rounded-full bg-white border border-gray-300 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
 
             {errors.email && (
@@ -145,7 +180,7 @@ export function Login() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-5 py-3 rounded-full bg-emerald-50 border border-emerald-100 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
+              className="w-full px-5 py-3 rounded-full bg-white border border-gray-300 text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
             />
 
             {errors.password && (
@@ -159,10 +194,11 @@ export function Login() {
 
           {/* Botón */}
           <button
+            disabled={loading}
             type="submit"
             className="w-full py-3 rounded-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
           >
-            Login
+            {loading ? 'Signing in...' : 'Login'}
           </button>
         
         </form>
